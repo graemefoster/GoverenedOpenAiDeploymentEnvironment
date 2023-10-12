@@ -1,10 +1,12 @@
 param vnetName string
 param location string = resourceGroup().location
 param vnetCidr string
+param tags object
 
 resource apimNsg 'Microsoft.Network/networkSecurityGroups@2022-11-01' = {
   name: '${vnetName}-apim-nsg'
   location: location
+  tags: tags
   properties: {
     securityRules: [
       {

@@ -1,30 +1,18 @@
 targetScope = 'resourceGroup'
-param existing bool
 param openAiResourceName string
 param openAiModelName string
 param openAiModelGpt4Name string
 param openAiEmbeddingModelName string
 param managedIdentityPrincipalId string
 param openAiLocation string
+param aadGroupId string
+param tags object
 
-resource openAiExisting 'Microsoft.CognitiveServices/accounts@2023-05-01' existing = if (existing) {
-  name: openAiResourceName
-}
-
-resource deployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' existing = if (existing) {
-  parent: openAiExisting
-  name: openAiModelName
-}
-
-resource embeddingDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' existing = if (existing) {
-  parent: openAiExisting
-  name: openAiEmbeddingModelName
-}
-
-resource openAiNew 'Microsoft.CognitiveServices/accounts@2023-05-01' = if (!existing) {
+resource openAiNew 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   name: openAiResourceName
   location: openAiLocation
   kind: 'OpenAI'
+  tags: tags
   identity: {
     type: 'SystemAssigned'
   }
@@ -44,7 +32,7 @@ resource openAiNew 'Microsoft.CognitiveServices/accounts@2023-05-01' = if (!exis
   }
 }
 
-resource deploymentNew 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = if (!existing) {
+resource deploymentNew 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
   name: openAiModelName
   parent: openAiNew
   sku: {
@@ -60,7 +48,7 @@ resource deploymentNew 'Microsoft.CognitiveServices/accounts/deployments@2023-05
   }
 }
 
-resource gpt4DeploymentNew 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = if (!existing) {
+resource gpt4DeploymentNew 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
   name: openAiModelGpt4Name
   parent: openAiNew
   sku: {
@@ -79,7 +67,7 @@ resource gpt4DeploymentNew 'Microsoft.CognitiveServices/accounts/deployments@202
   ]
 }
 
-resource embeddingDeploymentNew 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = if (!existing) {
+resource embeddingDeploymentNew 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
   name: openAiEmbeddingModelName
   parent: openAiNew
   sku: {
@@ -103,8 +91,8 @@ resource openAiRole 'Microsoft.Authorization/roleDefinitions@2022-05-01-preview'
 }
 
 resource rbacModelReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('${managedIdentityPrincipalId}-search-${existing ? openAiExisting.id : openAiNew.id}')
-  scope: existing ? openAiExisting : openAiNew
+  name: guid('${managedIdentityPrincipalId}-search-${openAiNew.id}')
+  scope: openAiNew
   properties: {
     roleDefinitionId: openAiRole.id
     principalId: managedIdentityPrincipalId
@@ -112,8 +100,18 @@ resource rbacModelReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = 
   }
 }
 
-output id string = existing ? openAiExisting.id : openAiNew.id
-output openAiName string = existing ? openAiExisting.name : openAiNew.name
-output openAiEndpoint string = existing ? openAiExisting.properties.endpoint : openAiNew.properties.endpoint
-output modelName string = existing ? deployment.name : deploymentNew.name
-output embeddingModelName string = existing ? embeddingDeployment.name : embeddingDeploymentNew.name
+resource aadGroupRbacModelReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(aadGroupId)) {
+  name: guid('${aadGroupId}-modelreader-${openAiNew.id}')
+  scope:  openAiNew
+  properties: {
+    roleDefinitionId: openAiRole.id
+    principalId: aadGroupId
+    principalType: 'Group'
+  }
+}
+
+output id string = openAiNew.id
+output openAiName string = openAiNew.name
+output openAiEndpoint string = openAiNew.properties.endpoint
+output modelName string = deploymentNew.name
+output embeddingModelName string = embeddingDeploymentNew.name

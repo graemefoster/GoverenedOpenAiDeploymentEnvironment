@@ -5,10 +5,12 @@ param subnetId string
 param apiName string
 param applicationInsightsName string
 param openAiBaseUrl string 
+param tags object
 
 module apim '../core/gateway/apim.bicep' = {
   name: '${deployment().name}-apim'
   params: {
+    tags: tags
     name: apiName
     subnetId: subnetId
     location: location

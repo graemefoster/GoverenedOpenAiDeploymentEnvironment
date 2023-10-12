@@ -1,4 +1,4 @@
-targetScope = 'subscription'
+targetScope = 'resourceGroup'
 
 // The main bicep module to provision Azure resources.
 // For a more complete walkthrough to understand how this file works with azd,
@@ -13,12 +13,8 @@ param environmentName string
 @description('Primary location for all resources')
 param location string
 
-// Optional parameters to override the default azd resource naming conventions.
-// Add the following to main.parameters.json to provide values:
-// "resourceGroupName": {
-//      "value": "myGroupName"
-// }
-param resourceGroupName string = ''
+@description('AAD Group Id for users who can access the OpenAI resource.')
+param openAiUsersGroupId string
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
@@ -31,7 +27,7 @@ var tags = {
 // Generate a unique token to be used in naming resources.
 // Remove linter suppression after using.
 #disable-next-line no-unused-vars
-var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
+var resourceToken = toLower(uniqueString(resourceGroup().id, environmentName, location))
 
 // Name of the service defined in azure.yaml
 // A tag named azd-service-name with this value should be applied to the service host resource, such as:
@@ -40,13 +36,6 @@ var resourceToken = toLower(uniqueString(subscription().id, environmentName, loc
 //   tags: union(tags, { 'azd-service-name': apiServiceName })
 #disable-next-line no-unused-vars
 var apiServiceName = 'python-api'
-
-// Organize resources in a resource group
-resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
-  location: location
-  tags: tags
-}
 
 // Add resources to be provisioned below.
 // A full example that leverages azd bicep modules can be seen in the todo-python-mongo template:
@@ -59,36 +48,35 @@ var openAiName = toLower('${abbrs.cognitiveServicesAccounts}${environmentName}')
 
 module vnet 'base/vnet.bicep' = {
   name: '${deployment().name}-vnet'
-  scope: rg
   params: {
     vnetCidr: '10.0.0.0/12'
     vnetName: vnetName
     location: location
+    tags: tags
   }
 }
 
 module core 'base/core.bicep' = {
   name: '${deployment().name}-core'
-  scope: rg
   params: {
     location: location
     kvName: kvName
     logAnalyticsName: '${abbrs.operationalInsightsWorkspaces}-${environmentName}-logs'
-    appinsightsName:  '${abbrs.insightsComponents}-${environmentName}'
+    appinsightsName: '${abbrs.insightsComponents}-${environmentName}'
+    tags: tags
   }
 }
 
 module identities 'base/identities.bicep' = {
   name: '${deployment().name}-identities'
-  scope: rg
   params: {
     location: location
+    tags: tags
   }
 }
 
 module apim 'apim/main.bicep' = {
   name: '${deployment().name}-apim'
-  scope: rg
   params: {
     apiName: apimName
     applicationInsightsName: core.outputs.appInsightsName
@@ -97,23 +85,23 @@ module apim 'apim/main.bicep' = {
     subnetId: vnet.outputs.apimSubnetId
     location: location
     openAiBaseUrl: openai.outputs.openAiEndpoint
+    tags: tags
   }
 }
 
 module openai 'open-ai/main.bicep' = {
   name: '${deployment().name}-openai'
-  scope: rg
   params: {
-    existing: false
     openAiEmbeddingModelName: 'Ada002Embedding'
     openAiModelName: 'Gpt35Turbo0613'
     openAiModelGpt4Name: 'Gpt4'
     openAiLocation: 'canadaeast'
     openAiResourceName: openAiName
     managedIdentityPrincipalId: identities.outputs.identityPrincipalId
+    aadGroupId: openAiUsersGroupId
+    tags: tags
   }
 }
-
 
 // Add outputs from the deployment here, if needed.
 //
