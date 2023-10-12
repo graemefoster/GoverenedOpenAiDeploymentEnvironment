@@ -4,8 +4,11 @@ param openAiModelName string
 param openAiModelGpt4Name string
 param openAiEmbeddingModelName string
 param managedIdentityPrincipalId string
-param openAiLocation string
+param location string = resourceGroup().location
+param openAiLocation string = resourceGroup().location
 param aadGroupId string
+param privateEndpointSubnetId string
+param privateDnsZoneId string
 param tags object
 
 resource openAiNew 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
@@ -20,15 +23,48 @@ resource openAiNew 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
     name: 'S0'
   }
   properties: {
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: 'Disabled'
     networkAcls: {
-      defaultAction: 'Allow'
-      ipRules: [
-      ]
-      virtualNetworkRules: [
-      ]
+      defaultAction: 'Deny'
+      ipRules: []
+      virtualNetworkRules: []
     }
     customSubDomainName: openAiResourceName
+  }
+}
+
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-11-01' = {
+  name: '${openAiResourceName}-private-endpoint'
+  location: location
+  properties: {
+    subnet: {
+      id: privateEndpointSubnetId
+    }
+    privateLinkServiceConnections: [
+      {
+        name: '${openAiResourceName}-private-link-service-connection'
+        properties: {
+          privateLinkServiceId: openAiNew.id
+          groupIds: [
+            'account'
+          ]
+        }
+      }
+    ]
+  }
+
+  resource dnsGroup 'privateDnsZoneGroups@2022-11-01' = {
+    name: '${openAiResourceName}-private-endpoint-dns'
+    properties: {
+      privateDnsZoneConfigs: [
+        {
+          name: '${openAiResourceName}-private-endpoint-cfg'
+          properties: {
+            privateDnsZoneId: privateDnsZoneId
+          }
+        }
+      ]
+    }
   }
 }
 
@@ -48,7 +84,7 @@ resource deploymentNew 'Microsoft.CognitiveServices/accounts/deployments@2023-05
   }
 }
 
-resource gpt4DeploymentNew 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
+resource gpt4DeploymentNew 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = if (!empty(openAiModelGpt4Name)) {
   name: openAiModelGpt4Name
   parent: openAiNew
   sku: {
@@ -81,9 +117,7 @@ resource embeddingDeploymentNew 'Microsoft.CognitiveServices/accounts/deployment
       version: '2'
     }
   }
-  dependsOn: [
-    gpt4DeploymentNew
-  ]
+  dependsOn: empty(gpt4DeploymentNew) ? [ deploymentNew ] : [ gpt4DeploymentNew ]
 }
 
 resource openAiRole 'Microsoft.Authorization/roleDefinitions@2022-05-01-preview' existing = {
@@ -102,7 +136,7 @@ resource rbacModelReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = 
 
 resource aadGroupRbacModelReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(aadGroupId)) {
   name: guid('${aadGroupId}-modelreader-${openAiNew.id}')
-  scope:  openAiNew
+  scope: openAiNew
   properties: {
     roleDefinitionId: openAiRole.id
     principalId: aadGroupId

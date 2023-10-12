@@ -1,5 +1,5 @@
 import express from 'express'
-import accounts from './customers'
+import customers from './customers'
 
 
 const app = express()
@@ -9,7 +9,7 @@ app.use(express.json())
 
 const router = express.Router()
 
-router.get('/customer/:customerNumber', (req, res) => accounts.getAccountBalance(req.params.accountNumber, res));
+router.get('/customer/:customerNumber', (req, res) => customers.getCustomerDetails(req.params.customerNumber, res));
 
 app.use(router)
 app.listen(app.get('port'))

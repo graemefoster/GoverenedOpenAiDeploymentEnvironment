@@ -5,6 +5,8 @@ param subnetId string
 param apiName string
 param applicationInsightsName string
 param openAiBaseUrl string 
+param customerApiBaseUrl string
+param accountsApiBaseUrl string
 param tags object
 
 module apim '../core/gateway/apim.bicep' = {
@@ -27,6 +29,9 @@ module apimConfig './apis.bicep' = {
   params: {
     apimName: apim.outputs.apimServiceName
     openAiBaseUrl: openAiBaseUrl
+    customerApiBaseUrl: customerApiBaseUrl
+    accountsApiBaseUrl: accountsApiBaseUrl
+    loggerId: apim.outputs.loggerId
   }
 }
 

@@ -61,6 +61,7 @@ output kvName string = kvName
 output kvId string = keyvault.id
 output kvUri string = keyvault.properties.vaultUri
 output logAnalyticsId string = lanalytics.id
+output logAnalyticsName string = lanalytics.name
 output appInsightsName string = appi.name
 output appInsightsResourceId string = appi.id
 output appInsightsInstrumentationKey string = appi.properties.InstrumentationKey

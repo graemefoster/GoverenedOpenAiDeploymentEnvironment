@@ -86,20 +86,65 @@ module apim 'apim/main.bicep' = {
     location: location
     openAiBaseUrl: openai.outputs.openAiEndpoint
     tags: tags
+    accountsApiBaseUrl: accountsApi.outputs.appUrl
+    customerApiBaseUrl: customerApi.outputs.appUrl
   }
 }
 
 module openai 'open-ai/main.bicep' = {
   name: '${deployment().name}-openai'
   params: {
+    location: location
     openAiEmbeddingModelName: 'Ada002Embedding'
     openAiModelName: 'Gpt35Turbo0613'
     openAiModelGpt4Name: 'Gpt4'
-    openAiLocation: 'canadaeast'
+    openAiLocation: location //'canadaeast'
     openAiResourceName: openAiName
     managedIdentityPrincipalId: identities.outputs.identityPrincipalId
     aadGroupId: openAiUsersGroupId
+    privateDnsZoneId: vnet.outputs.openAiPrivateDnsZoneId
+    privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId
     tags: tags
+  }
+}
+
+module appService './base/apps.bicep' = {
+  name: '${deployment().name}-apps'
+  params: {
+    appiName: 'appi-${environmentName}'
+    aspName: '${abbrs.webSitesAppService}-${environmentName}'
+    logAnalyticsName: core.outputs.logAnalyticsName
+    location: location
+  }
+}
+
+module customerApi './apis/main.bicep' = {
+  name: '${deployment().name}-cxapi'
+  params: {
+    appInsightsConnectionString: appService.outputs.applicationInsightsConnectionString
+    aspId: appService.outputs.aspId
+    logAnalyticsId: core.outputs.logAnalyticsId
+    privateDnsZoneId: vnet.outputs.appServicePrivateDnsZoneId
+    privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId
+    sampleAppName: 'customerapi-${resourceToken}'
+    vnetIntegrationSubnetId: vnet.outputs.vnetIntegrationSubnetId
+    location: location
+    azdServiceName: 'customer-api'
+  }
+}
+
+module accountsApi './apis/main.bicep' = {
+  name: '${deployment().name}-accountsapi'
+  params: {
+    appInsightsConnectionString: appService.outputs.applicationInsightsConnectionString
+    aspId: appService.outputs.aspId
+    logAnalyticsId: core.outputs.logAnalyticsId
+    privateDnsZoneId: vnet.outputs.appServicePrivateDnsZoneId
+    privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId
+    sampleAppName: 'accountsapi-${resourceToken}'
+    vnetIntegrationSubnetId: vnet.outputs.vnetIntegrationSubnetId
+    location: location
+    azdServiceName: 'accounts-api'
   }
 }
 
