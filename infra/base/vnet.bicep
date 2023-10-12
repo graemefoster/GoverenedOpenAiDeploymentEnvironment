@@ -50,7 +50,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2022-11-01' = {
       {
         name: 'AppServiceDelegated'
         properties: {
-          addressPrefix: cidrSubnet(vnetCidr, 24, 2)
+          addressPrefix: cidrSubnet(vnetCidr, 24, 1)
           delegations: [
             {
               name: 'AppServiceDelegation'

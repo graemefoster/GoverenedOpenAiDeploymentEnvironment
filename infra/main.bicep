@@ -54,6 +54,8 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 
 var vnetName = '${abbrs.networkVirtualNetworks}${environmentName}'
 var kvName = '${abbrs.keyVaultVaults}${environmentName}'
+var apimName = '${abbrs.apiManagementService}${environmentName}'
+var openAiName = toLower('${abbrs.cognitiveServicesAccounts}${environmentName}')
 
 module vnet 'base/vnet.bicep' = {
   name: '${deployment().name}-vnet'
@@ -64,7 +66,6 @@ module vnet 'base/vnet.bicep' = {
     location: location
   }
 }
-
 
 module core 'base/core.bicep' = {
   name: '${deployment().name}-core'
@@ -77,7 +78,41 @@ module core 'base/core.bicep' = {
   }
 }
 
+module identities 'base/identities.bicep' = {
+  name: '${deployment().name}-identities'
+  scope: rg
+  params: {
+    location: location
+  }
+}
 
+module apim 'apim/main.bicep' = {
+  name: '${deployment().name}-apim'
+  scope: rg
+  params: {
+    apiName: apimName
+    applicationInsightsName: core.outputs.appInsightsName
+    publisherEmail: 'graemefoster@microsoft.com'
+    publisherName: 'Graeme Foster'
+    subnetId: vnet.outputs.apimSubnetId
+    location: location
+    openAiBaseUrl: openai.outputs.openAiEndpoint
+  }
+}
+
+module openai 'open-ai/main.bicep' = {
+  name: '${deployment().name}-openai'
+  scope: rg
+  params: {
+    existing: false
+    openAiEmbeddingModelName: 'Ada002Embedding'
+    openAiModelName: 'Gpt35Turbo0613'
+    openAiModelGpt4Name: 'Gpt4'
+    openAiLocation: 'canadaeast'
+    openAiResourceName: openAiName
+    managedIdentityPrincipalId: identities.outputs.identityPrincipalId
+  }
+}
 
 
 // Add outputs from the deployment here, if needed.
