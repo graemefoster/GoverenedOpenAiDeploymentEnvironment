@@ -1,6 +1,6 @@
 name: AzureOpenAISandbox
-    version: 1.0.0
-    summary: Azure Open AI with Policy deployment
-    description: Deploys Open AI behind API Management with AAD RBAC
-    runner: ARM
-    templatePath: azuredeploy.json
+version: 1.0.0
+summary: Azure Open AI with Policy deployment
+description: Deploys Open AI behind API Management with AAD RBAC
+runner: ARM
+templatePath: azuredeploy.json
