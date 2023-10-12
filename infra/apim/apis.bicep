@@ -42,31 +42,37 @@ resource gqlApi 'Microsoft.ApiManagement/service/apis@2023-03-01-preview' = {
   }
 
   resource schema 'schemas' = {
-    name: 'schema'
+    name: 'graphql'
     properties: {
-      contentType: 'application/graphql'
+      contentType: 'application/vnd.ms-azure-apim.graphql.schema'
       document: {
-        value: '''
-        schema {
-          query: Query
-        }
-        
-        type Query {
-            customer(id: Int!): Customer
-        }
-        
-        type Customer { 
-            id: Int!
-            name: String!
-            account: Account
-        }
-        
-        type Account {
-            id: Int!
-            balance: Int!
-            availableBalance: Int!
-        }
-              '''
+        value: loadTextContent('schema.gql')
+      }
+    }
+  }
+
+  resource queryCustomerByNumberResolver 'resolvers@2023-03-01-preview' = {
+
+    name: 'Query-customer'
+
+    properties: {
+      displayName: 'Query-customer Resolver'
+      path: 'Query/Customer'
+      description: 'Links the Customer type in the schema with a backend customer api'
+    }
+
+    resource resolverPolicy 'policies' = {
+      name: 'policy'
+      properties: {
+        format: 'rawxml'
+        value: replace('''
+    <http-data-source>
+      <http-request>
+        <set-method>GET</set-method>
+        <set-url>@($"|apiBaseUrl|/customer/{(string)context.GraphQL.Arguments["customerNumber"]}")</set-url>
+      </http-request>
+    </http-data-source>
+        ''', '|apiBaseUrl|', customerApiBaseUrl)
       }
     }
   }
@@ -86,10 +92,12 @@ resource gqlApi 'Microsoft.ApiManagement/service/apis@2023-03-01-preview' = {
       properties: {
         format: 'rawxml'
         value: replace('''
-        <http-data-source>
-          <set-method>GET</set-method>
-          <set-url>|apiBaseUrl|/customer/</set-url>
-        </http-data-source>
+    <http-data-source>
+      <http-request>
+        <set-method>GET</set-method>
+        <set-url>@($"|apiBaseUrl|/customer/{(string)context.GraphQL.Parent["customerNumber"]}")</set-url>
+      </http-request>
+    </http-data-source>
         ''', '|apiBaseUrl|', customerApiBaseUrl)
       }
     }
@@ -97,12 +105,12 @@ resource gqlApi 'Microsoft.ApiManagement/service/apis@2023-03-01-preview' = {
 
   resource acountsResolver 'resolvers@2023-03-01-preview' = {
 
-    name: 'accountsResolver'
+    name: 'customerAccountsResolver'
 
     properties: {
-      displayName: 'Accounts Resolver'
-      path: 'Accounts'
-      description: 'Links the Accounts type in the schema with a backend accounts api'
+      displayName: 'Customer Accounts Resolver'
+      path: 'Customer/account'
+      description: 'Links the Customer/accounts field in the schema with a backend accounts api'
     }
 
     resource resolverPolicy 'policies' = {
@@ -110,10 +118,12 @@ resource gqlApi 'Microsoft.ApiManagement/service/apis@2023-03-01-preview' = {
       properties: {
         format: 'rawxml'
         value: replace('''
-        <http-data-source>
-          <set-method>GET</set-method>
-          <set-url>|apiBaseUrl|/customer/</set-url>
-        </http-data-source>
+    <http-data-source>
+      <http-request>
+        <set-method>GET</set-method>
+        <set-url>@($"|apiBaseUrl|/customer/{(string)context.GraphQL.Parent["customerNumber"]}/accounts")</set-url>
+      </http-request>
+    </http-data-source>
         ''', '|apiBaseUrl|', accountsApiBaseUrl)
       }
     }

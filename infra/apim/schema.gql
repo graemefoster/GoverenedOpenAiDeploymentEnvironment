@@ -1,0 +1,19 @@
+schema {
+    query: Query
+}
+
+type Query {
+    customer(customerNumber: String!): Customer
+}
+
+type Customer { 
+    customerNumber: String!
+    name: String!
+    account: [Account]
+}
+
+type Account {
+    accountNumber: String!
+    balance: Int!
+    name: String!
+}

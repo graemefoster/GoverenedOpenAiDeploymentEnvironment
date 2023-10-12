@@ -9,6 +9,7 @@ app.use(express.json())
 
 const router = express.Router()
 
+router.get('/customer/:customerNumber/accounts', (req, res) => accounts.getAccountsForCustomer(req.params.customerNumber, res));
 router.get('/account/:accountNumber/balance', (req, res) => accounts.getAccountBalance(req.params.accountNumber, res));
 router.get('/account/:accountNumber/details', (req, res) =>  accounts.getAccountDetails(req.params.accountNumber, res));
 router.get('/account/:accountNumber/payments', (req, res) =>  accounts.getAccountPayments(req.params.accountNumber, res));

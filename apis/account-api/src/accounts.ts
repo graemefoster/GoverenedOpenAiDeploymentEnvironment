@@ -1,6 +1,12 @@
 import { Response } from 'express';
 import { accounts, payments } from './account-data'
 
+const getAccountsForCustomer = async (customerNumber: string, res: Response) => {
+    const customerAccounts = accounts.filter(a => a.customerNumber === customerNumber);
+    console.log(`Returning accounts for customer ${customerNumber}`)
+    return res.send(customerAccounts);
+}
+
 const getAccountDetails = async (accountNumber: string, res: Response) => {
     const account = accounts.find(a => a.accountNumber === accountNumber);
     if (account !== undefined) {
@@ -39,4 +45,4 @@ const getAccountPayments = async (accountNumber: string, res: Response) => {
 }
 
 
-export default { getAccountDetails, getAccountPayments, getAccountBalance }
+export default { getAccountDetails, getAccountPayments, getAccountBalance, getAccountsForCustomer }

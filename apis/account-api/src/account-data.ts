@@ -1,4 +1,5 @@
 export interface Account {
+    customerNumber: string
     accountNumber: string
     balance: number
     name: string
@@ -30,24 +31,28 @@ export const payments: Record<string, AccountLastPayments[]> = {
 
 export const accounts: Account[] = [
     {
+        customerNumber: '11111111',
         accountNumber: '123456789',
         balance: 232,
         city: 'Perth',
-        name: 'Graeme',
+        name: 'Graeme Saving',
     },
     {
+        customerNumber: '33333333',
         accountNumber: '2342343',
         balance: 123342,
         city: 'Burnley',
-        name: 'Paul'
+        name: 'Paul credit'
     },
     {
+        customerNumber: '33333333',
         accountNumber: '26635765',
         balance: 43434,
         city: 'Sydney',
-        name: 'Fred'
+        name: 'Paul saving'
     },
     {
+        customerNumber: '22222222',
         accountNumber: '908348905',
         balance: 534234,
         city: 'Perth',

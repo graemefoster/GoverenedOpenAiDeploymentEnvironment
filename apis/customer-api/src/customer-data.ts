@@ -17,6 +17,6 @@ export const customers: Customer[] = [
     {
         id: 3,
         customerNumber: '33333333',
-        name: 'Oliver'
+        name: 'Paul'
     }
 ]

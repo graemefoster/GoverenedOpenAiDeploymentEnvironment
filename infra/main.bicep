@@ -98,7 +98,7 @@ module openai 'open-ai/main.bicep' = {
     openAiEmbeddingModelName: 'Ada002Embedding'
     openAiModelName: 'Gpt35Turbo0613'
     openAiModelGpt4Name: 'Gpt4'
-    openAiLocation: location //'canadaeast'
+    openAiLocation: 'canadaeast'
     openAiResourceName: openAiName
     managedIdentityPrincipalId: identities.outputs.identityPrincipalId
     aadGroupId: openAiUsersGroupId
