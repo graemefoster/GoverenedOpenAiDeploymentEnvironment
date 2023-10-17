@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "13272337238971382234"
+      "templateHash": "3328572113015674106"
     }
   },
   "parameters": {
@@ -193,7 +193,7 @@
     "aadGroupIds": "[variables('$fxv#1')]",
     "devBoxUserGroup": "[if(equals(parameters('devBoxUsersAadGroupId'), 'azd'), variables('aadGroupIds').AadDevBoxUsersGroupId, parameters('devBoxUsersAadGroupId'))]",
     "vnetName": "[format('{0}{1}', variables('abbrs').networkVirtualNetworks, parameters('environmentName'))]",
-    "kvName": "[format('{0}{1}', variables('abbrs').keyVaultVaults, parameters('environmentName'))]",
+    "kvName": "[format('{0}{1}', variables('abbrs').keyVaultVaults, variables('resourceToken'))]",
     "apimName": "[format('{0}{1}', variables('abbrs').apiManagementService, parameters('environmentName'))]",
     "openAiName": "[toLower(format('{0}{1}', variables('abbrs').cognitiveServicesAccounts, parameters('environmentName')))]"
   },

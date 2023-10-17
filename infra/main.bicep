@@ -51,7 +51,7 @@ var aadGroupIds = loadJsonContent('./aad-group-ids.json')
 var devBoxUserGroup = devBoxUsersAadGroupId == 'azd' ? aadGroupIds.AadDevBoxUsersGroupId : devBoxUsersAadGroupId
 
 var vnetName = '${abbrs.networkVirtualNetworks}${environmentName}'
-var kvName = '${abbrs.keyVaultVaults}${environmentName}'
+var kvName = '${abbrs.keyVaultVaults}${resourceToken}'
 var apimName = '${abbrs.apiManagementService}${environmentName}'
 var openAiName = toLower('${abbrs.cognitiveServicesAccounts}${environmentName}')
 
