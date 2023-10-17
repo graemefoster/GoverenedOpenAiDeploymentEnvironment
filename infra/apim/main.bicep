@@ -4,7 +4,7 @@ param publisherName string
 param subnetId string
 param apiName string
 param applicationInsightsName string
-param openAiBaseUrl string 
+param openAiBaseUrl string
 param customerApiBaseUrl string
 param accountsApiBaseUrl string
 param tags object
@@ -15,6 +15,9 @@ resource apimPip 'Microsoft.Network/publicIPAddresses@2023-05-01' = {
   sku: {
     name: 'Standard'
     tier: 'Global'
+  }
+  properties: {
+    publicIPAllocationMethod: 'Static'
   }
 }
 
@@ -44,4 +47,3 @@ module apimConfig './apis.bicep' = {
     loggerId: apim.outputs.loggerId
   }
 }
-
