@@ -4,3 +4,15 @@ summary: Azure Open AI with Policy deployment
 description: Deploys Open AI behind API Management with AAD RBAC
 runner: ARM
 templatePath: azuredeploy.json
+parameters:
+- id: devBoxUsersAadGroupId
+  name: devBoxUsersAadGroupId
+  type: string
+  description: Azure AD Group ID for DevBox users
+  required: true
+- id: openAiLocation
+  name: openAiLocation
+  type: string
+  description: Open AI Location (defaults to resource group location)
+  required: false
+  

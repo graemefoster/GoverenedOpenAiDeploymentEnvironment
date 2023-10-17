@@ -7,15 +7,15 @@ targetScope = 'resourceGroup'
 @minLength(1)
 @maxLength(64)
 @description('Name of the the environment which is used to generate a short unique hash used in all resources.')
-param environmentName string
+param environmentName string = resourceGroup().name
 
 @minLength(1)
 @description('Primary location for all resources')
-param location string
+param location string = resourceGroup().location
 
 @minLength(1)
 @description('Location for OpenAI resource')
-param openAiLocation string
+param openAiLocation string = resourceGroup().location
 
 @minLength(1)
 @description('USer Group Id for Dev Box users. Pass \'azd\' if you are running this template using azd.')
