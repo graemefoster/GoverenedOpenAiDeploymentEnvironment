@@ -17,6 +17,10 @@ param location string
 @description('Location for OpenAI resource')
 param openAiLocation string
 
+@minLength(1)
+@description('USer Group Id for Dev Box users. Pass \'azd\' if you are running this template using azd.')
+param devBoxUsersAadGroupId string
+
 var abbrs = loadJsonContent('./abbreviations.json')
 
 // tags that should be applied to all resources.
@@ -44,6 +48,7 @@ var apiServiceName = 'python-api'
 
 // These are populated by the createAadGroups.ps1 pre-provision script 
 var aadGroupIds = loadJsonContent('./aad-group-ids.json')
+var devBoxUserGroup = devBoxUsersAadGroupId == 'azd' ? aadGroupIds.AadDevBoxUsersGroupId : devBoxUsersAadGroupId
 
 var vnetName = '${abbrs.networkVirtualNetworks}${environmentName}'
 var kvName = '${abbrs.keyVaultVaults}${environmentName}'
@@ -106,7 +111,7 @@ module openai 'open-ai/main.bicep' = {
     openAiLocation: openAiLocation
     openAiResourceName: openAiName
     managedIdentityPrincipalId: identities.outputs.identityPrincipalId
-    aadGroupId: aadGroupIds.AadDevBoxUsersGroupId //devbox users need access to this.
+    aadGroupId: devBoxUserGroup
     privateDnsZoneId: vnet.outputs.openAiPrivateDnsZoneId
     privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId
     tags: tags
