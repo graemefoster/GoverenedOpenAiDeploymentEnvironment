@@ -8,8 +8,8 @@
       "location": {
         "value": "${AZURE_LOCATION}"
       },
-      "openAiUsersGroupid": {
-        "value": "${OPEN_AI_USERS_GROUP_ID}"
+      "openAiLocation": {
+        "value": "${AZURE_OPENAI_LOCATION}"
       }
     }
 }

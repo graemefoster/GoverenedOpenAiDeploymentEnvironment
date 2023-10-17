@@ -6,6 +6,12 @@
 
 # Name of the application.
 name: azd-starter
+# add a preprovision hook to call the createAadGroups.ps1 script
+hooks:
+  preprovision:
+    shell: pwsh
+    interactive: true
+    run: ./hooks/preprovision/createAadGroups.ps1
 services:
   accounts-api:
     language: ts

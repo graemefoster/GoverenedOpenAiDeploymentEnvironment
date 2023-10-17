@@ -13,8 +13,9 @@ param environmentName string
 @description('Primary location for all resources')
 param location string
 
-@description('AAD Group Id for users who can access the OpenAI resource.')
-param openAiUsersGroupId string
+@minLength(1)
+@description('Location for OpenAI resource')
+param openAiLocation string
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
@@ -40,6 +41,9 @@ var apiServiceName = 'python-api'
 // Add resources to be provisioned below.
 // A full example that leverages azd bicep modules can be seen in the todo-python-mongo template:
 // https://github.com/Azure-Samples/todo-python-mongo/tree/main/infra
+
+// These are populated by the createAadGroups.ps1 pre-provision script 
+var aadGroupIds = loadJsonContent('./aad-group-ids.json')
 
 var vnetName = '${abbrs.networkVirtualNetworks}${environmentName}'
 var kvName = '${abbrs.keyVaultVaults}${environmentName}'
@@ -97,11 +101,12 @@ module openai 'open-ai/main.bicep' = {
     location: location
     openAiEmbeddingModelName: 'Ada002Embedding'
     openAiModelName: 'Gpt35Turbo0613'
-    openAiModelGpt4Name: 'Gpt4'
-    openAiLocation: 'canadaeast'
+    //openAiModelGpt4Name: 'Gpt4'
+    openAiModelGpt4Name: ''
+    openAiLocation: openAiLocation
     openAiResourceName: openAiName
     managedIdentityPrincipalId: identities.outputs.identityPrincipalId
-    aadGroupId: openAiUsersGroupId
+    aadGroupId: aadGroupIds.AadDevBoxUsersGroupId //devbox users need access to this.
     privateDnsZoneId: vnet.outputs.openAiPrivateDnsZoneId
     privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId
     tags: tags
