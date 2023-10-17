@@ -9,18 +9,6 @@ param customerApiBaseUrl string
 param accountsApiBaseUrl string
 param tags object
 
-resource apimPip 'Microsoft.Network/publicIPAddresses@2023-05-01' = {
-  name: '${apiName}-pip'
-  location: location
-  sku: {
-    name: 'Standard'
-    tier: 'Global'
-  }
-  properties: {
-    publicIPAllocationMethod: 'Static'
-  }
-}
-
 module apim '../core/gateway/apim.bicep' = {
   name: '${deployment().name}-apim'
   params: {
@@ -33,7 +21,6 @@ module apim '../core/gateway/apim.bicep' = {
     sku: 'Developer'
     skuCount: 1
     applicationInsightsName: applicationInsightsName
-    pipId: apimPip.id
   }
 }
 

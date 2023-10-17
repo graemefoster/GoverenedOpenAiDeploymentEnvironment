@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "14203066339530428184"
+      "templateHash": "387486333823731158"
     }
   },
   "parameters": {
@@ -663,7 +663,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.22.6.54827",
-              "templateHash": "9665138298301192306"
+              "templateHash": "13765333921318459610"
             }
           },
           "parameters": {
@@ -701,19 +701,6 @@
           },
           "resources": [
             {
-              "type": "Microsoft.Network/publicIPAddresses",
-              "apiVersion": "2023-05-01",
-              "name": "[format('{0}-pip', parameters('apiName'))]",
-              "location": "[parameters('location')]",
-              "sku": {
-                "name": "Standard",
-                "tier": "Global"
-              },
-              "properties": {
-                "publicIPAllocationMethod": "Static"
-              }
-            },
-            {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-apim', deployment().name)]",
@@ -749,9 +736,6 @@
                   },
                   "applicationInsightsName": {
                     "value": "[parameters('applicationInsightsName')]"
-                  },
-                  "pipId": {
-                    "value": "[resourceId('Microsoft.Network/publicIPAddresses', format('{0}-pip', parameters('apiName')))]"
                   }
                 },
                 "template": {
@@ -761,7 +745,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.22.6.54827",
-                      "templateHash": "3765582645215985690"
+                      "templateHash": "6045985453887796184"
                     },
                     "description": "Creates an Azure API Management instance."
                   },
@@ -826,9 +810,6 @@
                     },
                     "subnetId": {
                       "type": "string"
-                    },
-                    "pipId": {
-                      "type": "string"
                     }
                   },
                   "variables": {
@@ -856,8 +837,7 @@
                         "apiVersionConstraint": {
                           "minApiVersion": "2019-12-01"
                         },
-                        "virtualNetworkType": "External",
-                        "publicIpAddressId": "[parameters('pipId')]"
+                        "virtualNetworkType": "Internal"
                       }
                     },
                     {
@@ -894,10 +874,7 @@
                     }
                   }
                 }
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', format('{0}-pip', parameters('apiName')))]"
-              ]
+              }
             },
             {
               "type": "Microsoft.Resources/deployments",
