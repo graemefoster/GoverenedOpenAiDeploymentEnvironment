@@ -28,6 +28,7 @@ param skuCount int = 0
 param applicationInsightsName string
 
 param subnetId string
+param pipId string
 
 var virtualNetworkConfiguration = empty(subnetId) ? null : {
   subnetResourceId: subnetId
@@ -69,6 +70,7 @@ resource apimService 'Microsoft.ApiManagement/service@2023-03-01-preview' = {
       minApiVersion: '2019-12-01' //Azure policy suggestion
     }
     virtualNetworkType: 'External'
+    publicIpAddressId: pipId
   }
 }
 
