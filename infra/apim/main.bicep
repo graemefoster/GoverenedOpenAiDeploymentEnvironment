@@ -12,6 +12,10 @@ param tags object
 resource apimPip 'Microsoft.Network/publicIPAddresses@2023-05-01' = {
   name: '${apiName}-pip'
   location: location
+  sku: {
+    name: 'Standard'
+    tier: 'Global'
+  }
 }
 
 module apim '../core/gateway/apim.bicep' = {

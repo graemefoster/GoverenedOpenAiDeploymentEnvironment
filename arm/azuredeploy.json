@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "12755085517804469497"
+      "templateHash": "9532210395518004893"
     }
   },
   "parameters": {
@@ -663,7 +663,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.22.6.54827",
-              "templateHash": "14023262369824597884"
+              "templateHash": "13704846424290016402"
             }
           },
           "parameters": {
@@ -704,7 +704,11 @@
               "type": "Microsoft.Network/publicIPAddresses",
               "apiVersion": "2023-05-01",
               "name": "[format('{0}-pip', parameters('apiName'))]",
-              "location": "[parameters('location')]"
+              "location": "[parameters('location')]",
+              "sku": {
+                "name": "Standard",
+                "tier": "Global"
+              }
             },
             {
               "type": "Microsoft.Resources/deployments",
