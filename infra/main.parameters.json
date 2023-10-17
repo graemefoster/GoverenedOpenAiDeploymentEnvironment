@@ -10,6 +10,12 @@
       },
       "openAiLocation": {
         "value": "${AZURE_OPENAI_LOCATION}"
+      },
+      "devBoxUsersAadGroupId": {
+        "value": "${AZURE_DEVBOX_USERS_AAD_GROUP_ID}"
+      },
+      "devBoxPrivateEndpointSubnetId": {
+        "value": "${AZURE_DEVBOX_PRIVATE_ENDPOINT_SUBNET_ID}"
       }
     }
 }
