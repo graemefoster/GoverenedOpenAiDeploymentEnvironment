@@ -5,12 +5,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "9254019034917599801"
+      "templateHash": "13272337238971382234"
     }
   },
   "parameters": {
     "environmentName": {
       "type": "string",
+      "defaultValue": "[resourceGroup().name]",
       "minLength": 1,
       "maxLength": 64,
       "metadata": {
@@ -19,6 +20,7 @@
     },
     "location": {
       "type": "string",
+      "defaultValue": "[resourceGroup().location]",
       "minLength": 1,
       "metadata": {
         "description": "Primary location for all resources"
@@ -26,6 +28,7 @@
     },
     "openAiLocation": {
       "type": "string",
+      "defaultValue": "[resourceGroup().location]",
       "minLength": 1,
       "metadata": {
         "description": "Location for OpenAI resource"
