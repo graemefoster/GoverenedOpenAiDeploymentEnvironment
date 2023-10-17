@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "3328572113015674106"
+      "templateHash": "8381278117771885029"
     }
   },
   "parameters": {
@@ -179,19 +179,12 @@
       "webSitesFunctions": "func-",
       "webStaticSites": "stapp-"
     },
-    "$fxv#1": {
-      "AadDevBoxTeamLeadsGroupId": "c67ef1b6-b88b-4105-8d8f-1ba5e5464628",
-      "AadOpsUserGroupId": "d1466133-37f9-4212-acfc-89d97b69c1d5",
-      "AadDevBoxUsersGroupId": "3e86a134-9749-4be2-963b-4f90350d98ef"
-    },
     "abbrs": "[variables('$fxv#0')]",
     "tags": {
       "azd-env-name": "[parameters('environmentName')]"
     },
     "resourceToken": "[toLower(uniqueString(resourceGroup().id, parameters('environmentName'), parameters('location')))]",
     "apiServiceName": "python-api",
-    "aadGroupIds": "[variables('$fxv#1')]",
-    "devBoxUserGroup": "[if(equals(parameters('devBoxUsersAadGroupId'), 'azd'), variables('aadGroupIds').AadDevBoxUsersGroupId, parameters('devBoxUsersAadGroupId'))]",
     "vnetName": "[format('{0}{1}', variables('abbrs').networkVirtualNetworks, parameters('environmentName'))]",
     "kvName": "[format('{0}{1}', variables('abbrs').keyVaultVaults, variables('resourceToken'))]",
     "apimName": "[format('{0}{1}', variables('abbrs').apiManagementService, parameters('environmentName'))]",
@@ -1214,7 +1207,7 @@
             "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-identities', deployment().name)), '2022-09-01').outputs.identityPrincipalId.value]"
           },
           "aadGroupId": {
-            "value": "[variables('devBoxUserGroup')]"
+            "value": "[parameters('devBoxUsersAadGroupId')]"
           },
           "privateDnsZoneId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-vnet', deployment().name)), '2022-09-01').outputs.openAiPrivateDnsZoneId.value]"
@@ -1233,7 +1226,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.22.6.54827",
-              "templateHash": "931100558363161815"
+              "templateHash": "154103452543756214"
             }
           },
           "parameters": {
@@ -1363,7 +1356,7 @@
               "condition": "[not(empty(parameters('openAiModelGpt4Name')))]",
               "type": "Microsoft.CognitiveServices/accounts/deployments",
               "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('openAiResourceName'), parameters('openAiModelGpt4Name'))]",
+              "name": "[format('{0}/{1}', parameters('openAiResourceName'), if(empty(parameters('openAiModelGpt4Name')), 'IGNORE', parameters('openAiModelGpt4Name')))]",
               "sku": {
                 "name": "Standard",
                 "capacity": 20
@@ -1397,7 +1390,7 @@
               },
               "dependsOn": [
                 "[resourceId('Microsoft.CognitiveServices/accounts/deployments', parameters('openAiResourceName'), parameters('openAiModelName'))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/deployments', parameters('openAiResourceName'), parameters('openAiModelGpt4Name'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/deployments', parameters('openAiResourceName'), if(empty(parameters('openAiModelGpt4Name')), 'IGNORE', parameters('openAiModelGpt4Name')))]",
                 "[resourceId('Microsoft.CognitiveServices/accounts', parameters('openAiResourceName'))]"
               ]
             },

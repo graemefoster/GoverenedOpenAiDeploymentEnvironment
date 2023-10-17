@@ -85,7 +85,7 @@ resource deploymentNew 'Microsoft.CognitiveServices/accounts/deployments@2023-05
 }
 
 resource gpt4DeploymentNew 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = if (!empty(openAiModelGpt4Name)) {
-  name: openAiModelGpt4Name
+  name: empty(openAiModelGpt4Name) ? 'IGNORE' : openAiModelGpt4Name //fix Bicep issue which blows up if name is empty
   parent: openAiNew
   sku: {
     name: 'Standard'

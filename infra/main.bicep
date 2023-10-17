@@ -46,10 +46,6 @@ var apiServiceName = 'python-api'
 // A full example that leverages azd bicep modules can be seen in the todo-python-mongo template:
 // https://github.com/Azure-Samples/todo-python-mongo/tree/main/infra
 
-// These are populated by the createAadGroups.ps1 pre-provision script 
-var aadGroupIds = loadJsonContent('./aad-group-ids.json')
-var devBoxUserGroup = devBoxUsersAadGroupId == 'azd' ? aadGroupIds.AadDevBoxUsersGroupId : devBoxUsersAadGroupId
-
 var vnetName = '${abbrs.networkVirtualNetworks}${environmentName}'
 var kvName = '${abbrs.keyVaultVaults}${resourceToken}'
 var apimName = '${abbrs.apiManagementService}${environmentName}'
@@ -111,7 +107,7 @@ module openai 'open-ai/main.bicep' = {
     openAiLocation: openAiLocation
     openAiResourceName: openAiName
     managedIdentityPrincipalId: identities.outputs.identityPrincipalId
-    aadGroupId: devBoxUserGroup
+    aadGroupId: devBoxUsersAadGroupId
     privateDnsZoneId: vnet.outputs.openAiPrivateDnsZoneId
     privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId
     tags: tags
