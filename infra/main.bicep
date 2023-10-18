@@ -49,7 +49,6 @@ var apiServiceName = 'python-api'
 // https://github.com/Azure-Samples/todo-python-mongo/tree/main/infra
 
 var vnetName = '${abbrs.networkVirtualNetworks}${environmentName}'
-var kvName = '${abbrs.keyVaultVaults}${resourceToken}'
 var apimName = '${abbrs.apiManagementService}${environmentName}'
 var openAiName = toLower('${abbrs.cognitiveServicesAccounts}${environmentName}')
 
@@ -67,20 +66,19 @@ module core 'base/core.bicep' = {
   name: '${deployment().name}-core'
   params: {
     location: location
-    kvName: kvName
     logAnalyticsName: '${abbrs.operationalInsightsWorkspaces}-${environmentName}-logs'
     appinsightsName: '${abbrs.insightsComponents}-${environmentName}'
     tags: tags
   }
 }
 
-module identities 'base/identities.bicep' = {
-  name: '${deployment().name}-identities'
-  params: {
-    location: location
-    tags: tags
-  }
-}
+// module identities 'base/identities.bicep' = {
+//   name: '${deployment().name}-identities'
+//   params: {
+//     location: location
+//     tags: tags
+//   }
+// }
 
 module apim 'apim/main.bicep' = {
   name: '${deployment().name}-apim'
@@ -108,7 +106,6 @@ module openai 'open-ai/main.bicep' = {
     openAiModelGpt4Name: ''
     openAiLocation: openAiLocation
     openAiResourceName: openAiName
-    managedIdentityPrincipalId: identities.outputs.identityPrincipalId
     privateDnsZoneId: vnet.outputs.openAiPrivateDnsZoneId
     privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId
     tags: tags

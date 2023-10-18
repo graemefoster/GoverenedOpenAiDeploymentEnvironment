@@ -3,7 +3,6 @@ param openAiResourceName string
 param openAiModelName string
 param openAiModelGpt4Name string
 param openAiEmbeddingModelName string
-param managedIdentityPrincipalId string
 param location string = resourceGroup().location
 param openAiLocation string = resourceGroup().location
 param privateEndpointSubnetId string
@@ -117,20 +116,6 @@ resource embeddingDeploymentNew 'Microsoft.CognitiveServices/accounts/deployment
     }
   }
   dependsOn: empty(gpt4DeploymentNew) ? [ deploymentNew ] : [ gpt4DeploymentNew ]
-}
-
-resource openAiRole 'Microsoft.Authorization/roleDefinitions@2022-05-01-preview' existing = {
-  name: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
-}
-
-resource rbacModelReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('${managedIdentityPrincipalId}-search-${openAiNew.id}')
-  scope: openAiNew
-  properties: {
-    roleDefinitionId: openAiRole.id
-    principalId: managedIdentityPrincipalId
-    principalType: 'ServicePrincipal'
-  }
 }
 
 output id string = openAiNew.id
