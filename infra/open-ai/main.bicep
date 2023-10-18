@@ -6,7 +6,6 @@ param openAiEmbeddingModelName string
 param managedIdentityPrincipalId string
 param location string = resourceGroup().location
 param openAiLocation string = resourceGroup().location
-param aadGroupId string
 param privateEndpointSubnetId string
 param privateDnsZoneId string
 param tags object
@@ -131,16 +130,6 @@ resource rbacModelReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = 
     roleDefinitionId: openAiRole.id
     principalId: managedIdentityPrincipalId
     principalType: 'ServicePrincipal'
-  }
-}
-
-resource aadGroupRbacModelReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(aadGroupId)) {
-  name: guid('${aadGroupId}-modelreader-${openAiNew.id}')
-  scope: openAiNew
-  properties: {
-    roleDefinitionId: openAiRole.id
-    principalId: aadGroupId
-    principalType: 'Group'
   }
 }
 

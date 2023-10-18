@@ -17,10 +17,6 @@ param location string = resourceGroup().location
 @description('Location for OpenAI resource')
 param openAiLocation string = resourceGroup().location
 
-@minLength(1)
-@description('USer Group Id for Dev Box users. Pass \'azd\' if you are running this template using azd.')
-param devBoxUsersAadGroupId string
-
 var abbrs = loadJsonContent('./abbreviations.json')
 
 // tags that should be applied to all resources.
@@ -54,7 +50,7 @@ var openAiName = toLower('${abbrs.cognitiveServicesAccounts}${environmentName}')
 module vnet 'base/vnet.bicep' = {
   name: '${deployment().name}-vnet'
   params: {
-    vnetCidr: '10.0.0.0/12'
+    vnetCidr: '10.200.0.0/16'
     vnetName: vnetName
     location: location
     tags: tags
@@ -91,8 +87,6 @@ module apim 'apim/main.bicep' = {
     location: location
     openAiBaseUrl: openai.outputs.openAiEndpoint
     tags: tags
-    accountsApiBaseUrl: accountsApi.outputs.appUrl
-    customerApiBaseUrl: customerApi.outputs.appUrl
   }
 }
 
@@ -107,52 +101,12 @@ module openai 'open-ai/main.bicep' = {
     openAiLocation: openAiLocation
     openAiResourceName: openAiName
     managedIdentityPrincipalId: identities.outputs.identityPrincipalId
-    aadGroupId: devBoxUsersAadGroupId
     privateDnsZoneId: vnet.outputs.openAiPrivateDnsZoneId
     privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId
     tags: tags
   }
 }
 
-module appService './base/apps.bicep' = {
-  name: '${deployment().name}-apps'
-  params: {
-    appiName: 'appi-${environmentName}'
-    aspName: '${abbrs.webSitesAppService}-${environmentName}'
-    logAnalyticsName: core.outputs.logAnalyticsName
-    location: location
-  }
-}
-
-module customerApi './apis/main.bicep' = {
-  name: '${deployment().name}-cxapi'
-  params: {
-    appInsightsConnectionString: appService.outputs.applicationInsightsConnectionString
-    aspId: appService.outputs.aspId
-    logAnalyticsId: core.outputs.logAnalyticsId
-    privateDnsZoneId: vnet.outputs.appServicePrivateDnsZoneId
-    privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId
-    sampleAppName: 'customerapi-${resourceToken}'
-    vnetIntegrationSubnetId: vnet.outputs.vnetIntegrationSubnetId
-    location: location
-    azdServiceName: 'customer-api'
-  }
-}
-
-module accountsApi './apis/main.bicep' = {
-  name: '${deployment().name}-accountsapi'
-  params: {
-    appInsightsConnectionString: appService.outputs.applicationInsightsConnectionString
-    aspId: appService.outputs.aspId
-    logAnalyticsId: core.outputs.logAnalyticsId
-    privateDnsZoneId: vnet.outputs.appServicePrivateDnsZoneId
-    privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId
-    sampleAppName: 'accountsapi-${resourceToken}'
-    vnetIntegrationSubnetId: vnet.outputs.vnetIntegrationSubnetId
-    location: location
-    azdServiceName: 'accounts-api'
-  }
-}
 
 // Add outputs from the deployment here, if needed.
 //
