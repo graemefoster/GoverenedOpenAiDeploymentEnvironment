@@ -17,6 +17,12 @@ param location string = resourceGroup().location
 @description('Location for OpenAI resource')
 param openAiLocation string = resourceGroup().location
 
+@description('Subnet the devbox can reach to expose the APIm private endpoint in')
+param devBoxNetworkPrivateEndpointSubnetId string
+
+@description('Private DNS Zone to use for the APIm resource')
+param apimPrivateDnsZoneId string
+
 var abbrs = loadJsonContent('./abbreviations.json')
 
 // tags that should be applied to all resources.
@@ -86,6 +92,8 @@ module apim 'apim/main.bicep' = {
     subnetId: vnet.outputs.apimSubnetId
     location: location
     openAiBaseUrl: openai.outputs.openAiEndpoint
+    apimDnsPrivateZoneId: apimPrivateDnsZoneId
+    privateEndpointSubnetId: devBoxNetworkPrivateEndpointSubnetId
     tags: tags
   }
 }

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "14084357424396848413"
+      "templateHash": "18118365879080148886"
     }
   },
   "parameters": {
@@ -32,6 +32,18 @@
       "minLength": 1,
       "metadata": {
         "description": "Location for OpenAI resource"
+      }
+    },
+    "devBoxNetworkPrivateEndpointSubnetId": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet the devbox can reach to expose the APIm private endpoint in"
+      }
+    },
+    "apimPrivateDnsZoneId": {
+      "type": "string",
+      "metadata": {
+        "description": "Private DNS Zone to use for the APIm resource"
       }
     }
   },
@@ -639,6 +651,12 @@
           "openAiBaseUrl": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-openai', deployment().name)), '2022-09-01').outputs.openAiEndpoint.value]"
           },
+          "apimDnsPrivateZoneId": {
+            "value": "[parameters('apimPrivateDnsZoneId')]"
+          },
+          "privateEndpointSubnetId": {
+            "value": "[parameters('devBoxNetworkPrivateEndpointSubnetId')]"
+          },
           "tags": {
             "value": "[variables('tags')]"
           }
@@ -650,7 +668,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.22.6.54827",
-              "templateHash": "14593957354239582065"
+              "templateHash": "11669920882953101555"
             }
           },
           "parameters": {
@@ -676,11 +694,59 @@
             "openAiBaseUrl": {
               "type": "string"
             },
+            "privateEndpointSubnetId": {
+              "type": "string"
+            },
+            "apimDnsPrivateZoneId": {
+              "type": "string"
+            },
             "tags": {
               "type": "object"
             }
           },
           "resources": [
+            {
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', format('{0}-pe', parameters('apiName')), format('{0}-private-endpoint-dns', parameters('apiName')))]",
+              "properties": {
+                "privateDnsZoneConfigs": [
+                  {
+                    "name": "[format('{0}-private-endpoint-cfg', parameters('apiName'))]",
+                    "properties": {
+                      "privateDnsZoneId": "[parameters('apimDnsPrivateZoneId')]"
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints', format('{0}-pe', parameters('apiName')))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}-pe', parameters('apiName'))]",
+              "properties": {
+                "subnet": {
+                  "id": "[parameters('privateEndpointSubnetId')]"
+                },
+                "privateLinkServiceConnections": [
+                  {
+                    "name": "[format('{0}-plsc', parameters('apiName'))]",
+                    "properties": {
+                      "privateLinkServiceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-apim', deployment().name)), '2022-09-01').outputs.apimServiceId.value]",
+                      "groupIds": [
+                        "apimGateway"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', format('{0}-apim', deployment().name))]"
+              ]
+            },
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -726,7 +792,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.22.6.54827",
-                      "templateHash": "6045985453887796184"
+                      "templateHash": "14476286929173765149"
                     },
                     "description": "Creates an Azure API Management instance."
                   },
@@ -841,6 +907,10 @@
                     }
                   ],
                   "outputs": {
+                    "apimServiceId": {
+                      "type": "string",
+                      "value": "[resourceId('Microsoft.ApiManagement/service', parameters('name'))]"
+                    },
                     "apimServiceName": {
                       "type": "string",
                       "value": "[parameters('name')]"

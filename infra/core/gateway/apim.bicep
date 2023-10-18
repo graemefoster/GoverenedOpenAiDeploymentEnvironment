@@ -91,6 +91,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
   name: applicationInsightsName
 }
 
+output apimServiceId string = apimService.id
 output apimServiceName string = apimService.name
 output apiPrincipalId string = apimService.identity.principalId
 output loggerId string = apimLogger.id
