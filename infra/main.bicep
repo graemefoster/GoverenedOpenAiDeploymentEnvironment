@@ -72,14 +72,6 @@ module core 'base/core.bicep' = {
   }
 }
 
-// module identities 'base/identities.bicep' = {
-//   name: '${deployment().name}-identities'
-//   params: {
-//     location: location
-//     tags: tags
-//   }
-// }
-
 module apim 'apim/main.bicep' = {
   name: '${deployment().name}-apim'
   params: {
