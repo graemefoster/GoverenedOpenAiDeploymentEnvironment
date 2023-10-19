@@ -42,6 +42,7 @@ resource apimService 'Microsoft.ApiManagement/service@2023-03-01-preview' = {
     name: sku
     capacity: (sku == 'Consumption') ? 0 : ((sku == 'Developer') ? 1 : skuCount)
   }
+  zones: ['0']
   identity: {
     type: 'SystemAssigned'
   }
