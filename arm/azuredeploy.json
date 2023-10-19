@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "16821641489623289021"
+      "templateHash": "3737108091034645353"
     }
   },
   "parameters": {
@@ -553,7 +553,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.22.6.54827",
-              "templateHash": "3317870135199852158"
+              "templateHash": "673434545325188402"
             }
           },
           "parameters": {
@@ -678,7 +678,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.22.6.54827",
-                      "templateHash": "14715386872211457469"
+                      "templateHash": "3181719443017228928"
                     },
                     "description": "Creates an Azure API Management instance."
                   },
@@ -760,7 +760,7 @@
                         "capacity": "[if(equals(parameters('sku'), 'Consumption'), 0, if(equals(parameters('sku'), 'Developer'), 1, parameters('skuCount')))]"
                       },
                       "zones": [
-                        "0"
+                        "1"
                       ],
                       "identity": {
                         "type": "SystemAssigned"
