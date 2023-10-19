@@ -26,6 +26,7 @@ module apim '../core/gateway/apim.bicep' = {
 
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-05-01' = {
   name: '${apiName}-pe'
+  location: location
   properties: {
     subnet: {
       id: privateEndpointSubnetId
