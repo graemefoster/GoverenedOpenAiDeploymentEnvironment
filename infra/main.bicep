@@ -21,7 +21,7 @@ param openAiLocation string = resourceGroup().location
 param devBoxNetworkPrivateEndpointSubnetId string
 
 @description('Private DNS Zone to use for the APIm resource')
-param apimPrivateDnsZoneId string
+param appServicePrivateDnsZoneId string
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
@@ -48,9 +48,10 @@ var apiServiceName = 'python-api'
 // A full example that leverages azd bicep modules can be seen in the todo-python-mongo template:
 // https://github.com/Azure-Samples/todo-python-mongo/tree/main/infra
 
-var vnetName = '${abbrs.networkVirtualNetworks}${environmentName}'
-var apimName = '${abbrs.apiManagementService}${environmentName}'
-var openAiName = toLower('${abbrs.cognitiveServicesAccounts}${environmentName}')
+var vnetName = '${abbrs.networkVirtualNetworks}${resourceToken}'
+var openAiName = toLower('${abbrs.cognitiveServicesAccounts}${resourceToken}')
+var aspName = '${abbrs.webSitesAppService}-${resourceToken}'
+var appName = 'openai-centralcommand-${resourceToken}'
 
 module vnet 'base/vnet.bicep' = {
   name: '${deployment().name}-vnet'
@@ -72,19 +73,11 @@ module core 'base/core.bicep' = {
   }
 }
 
-module apim 'apim/main.bicep' = {
+module asp 'base/asp.bicep' = {
   name: '${deployment().name}-apim'
   params: {
-    apiName: apimName
-    applicationInsightsName: core.outputs.appInsightsName
-    publisherEmail: 'graemefoster@microsoft.com'
-    publisherName: 'Graeme Foster'
-    subnetId: vnet.outputs.apimSubnetId
     location: location
-    openAiBaseUrl: openai.outputs.openAiEndpoint
-    apimDnsPrivateZoneId: apimPrivateDnsZoneId
-    privateEndpointSubnetId: devBoxNetworkPrivateEndpointSubnetId
-    tags: tags
+    aspName: aspName
   }
 }
 
@@ -104,6 +97,21 @@ module openai 'open-ai/main.bicep' = {
   }
 }
 
+module openAiCentralCommand 'apps/main.bicep' = {
+  name: '${deployment().name}-centralcommand'
+  params: {
+    aspId: asp.outputs.aspId
+    azureMonitorWorkspaceId: core.outputs.logAnalyticsId
+    azureMonitorWorkspaceName: core.outputs.logAnalyticsName
+    openAiModelName: openai.outputs.modelName
+    openAiUrl: openai.outputs.openAiEndpoint
+    privateDnsZoneId: appServicePrivateDnsZoneId
+    privateEndpointSubnetId: devBoxNetworkPrivateEndpointSubnetId
+    sampleAppName: appName
+    vnetIntegrationSubnetId: vnet.outputs.vnetIntegrationSubnetId
+    location: location
+  }
+}
 
 // Add outputs from the deployment here, if needed.
 //
