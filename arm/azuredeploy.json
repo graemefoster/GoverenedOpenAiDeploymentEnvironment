@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "15124035486366563923"
+      "templateHash": "890252178206569974"
     }
   },
   "parameters": {
@@ -406,7 +406,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.22.6.54827",
-              "templateHash": "548691121353646213"
+              "templateHash": "6365641387836353795"
             }
           },
           "parameters": {
@@ -459,6 +459,10 @@
             "logAnalyticsId": {
               "type": "string",
               "value": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsName'))]"
+            },
+            "logAnalyticsCustomerId": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsName')), '2022-10-01').customerId]"
             },
             "logAnalyticsName": {
               "type": "string",
@@ -792,7 +796,7 @@
             "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-apim', deployment().name)), '2022-09-01').outputs.aspId.value]"
           },
           "azureMonitorWorkspaceId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-core', deployment().name)), '2022-09-01').outputs.logAnalyticsId.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-core', deployment().name)), '2022-09-01').outputs.logAnalyticsCustomerId.value]"
           },
           "azureMonitorWorkspaceName": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-core', deployment().name)), '2022-09-01').outputs.logAnalyticsName.value]"

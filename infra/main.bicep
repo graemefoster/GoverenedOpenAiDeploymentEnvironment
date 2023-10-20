@@ -101,7 +101,7 @@ module openAiCentralCommand 'apps/main.bicep' = {
   name: '${deployment().name}-cc'
   params: {
     aspId: asp.outputs.aspId
-    azureMonitorWorkspaceId: core.outputs.logAnalyticsId
+    azureMonitorWorkspaceId: core.outputs.logAnalyticsCustomerId
     azureMonitorWorkspaceName: core.outputs.logAnalyticsName
     openAiModelName: openai.outputs.modelName
     openAiUrl: openai.outputs.openAiEndpoint
