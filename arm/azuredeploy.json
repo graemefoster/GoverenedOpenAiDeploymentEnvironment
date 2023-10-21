@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "9385809022140722776"
+      "templateHash": "3407193104882152390"
     }
   },
   "parameters": {
@@ -830,7 +830,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.22.6.54827",
-              "templateHash": "14326642521920465222"
+              "templateHash": "17124270794102372800"
             }
           },
           "parameters": {
@@ -905,8 +905,16 @@
                   "vnetRouteAllEnabled": true,
                   "ipSecurityRestrictions": [],
                   "scmIpSecurityRestrictions": [],
-                  "linuxFxVersion": "DOCKER|graemefoster/aicentralcommand:0.3",
+                  "linuxFxVersion": "DOCKER|graemefoster/aicentralcommand:0.4",
                   "appSettings": [
+                    {
+                      "name": "AICentralCommand__AuthProviders__0__Type",
+                      "value": "NoAuth"
+                    },
+                    {
+                      "name": "AICentralCommand__AuthProviders__0__Name",
+                      "value": "no-auth"
+                    },
                     {
                       "name": "AICentralCommand__Endpoints__0__Type",
                       "value": "AzureOpenAIEndpoint"
@@ -954,6 +962,10 @@
                     {
                       "name": "AICentralCommand__Pipelines__0__EndpointChooser",
                       "value": "default"
+                    },
+                    {
+                      "name": "AICentralCommand__Pipelines__0__AuthProvider",
+                      "value": "no-auth"
                     },
                     {
                       "name": "AICentralCommand__Pipelines__0__Steps__0__StepType",
