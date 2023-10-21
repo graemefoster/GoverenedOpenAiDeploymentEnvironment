@@ -32,7 +32,7 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
       alwaysOn: true
       vnetRouteAllEnabled: true
       ipSecurityRestrictionsDefaultAction: 'Deny'
-      scmIpSecurityRestrictionsDefaultAction: 'Allow'
+      scmIpSecurityRestrictionsDefaultAction: 'Deny'
       ipSecurityRestrictions: []
       scmIpSecurityRestrictions: []
       linuxFxVersion: 'DOCKER|graemefoster/aicentralcommand:0.1'

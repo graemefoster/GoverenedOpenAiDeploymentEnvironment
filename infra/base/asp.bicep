@@ -5,7 +5,7 @@ resource asp 'Microsoft.Web/serverfarms@2022-09-01' = {
   name: aspName
   location: location
   sku: {
-    name: 'P1V3'
+    name: 'B1'
     capacity: 1
   }
   kind: 'linux'

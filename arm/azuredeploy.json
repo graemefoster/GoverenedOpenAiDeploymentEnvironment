@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "1222355393325976775"
+      "templateHash": "11892487959547689446"
     }
   },
   "parameters": {
@@ -508,7 +508,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.22.6.54827",
-              "templateHash": "13505694152889196215"
+              "templateHash": "12011806255707977710"
             }
           },
           "parameters": {
@@ -527,7 +527,7 @@
               "name": "[parameters('aspName')]",
               "location": "[parameters('location')]",
               "sku": {
-                "name": "P1V3",
+                "name": "B1",
                 "capacity": 1
               },
               "kind": "linux",
@@ -830,7 +830,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.22.6.54827",
-              "templateHash": "3407803145637037023"
+              "templateHash": "6046259890545790004"
             }
           },
           "parameters": {
@@ -905,7 +905,7 @@
                   "alwaysOn": true,
                   "vnetRouteAllEnabled": true,
                   "ipSecurityRestrictionsDefaultAction": "Deny",
-                  "scmIpSecurityRestrictionsDefaultAction": "Allow",
+                  "scmIpSecurityRestrictionsDefaultAction": "Deny",
                   "ipSecurityRestrictions": [],
                   "scmIpSecurityRestrictions": [],
                   "linuxFxVersion": "DOCKER|graemefoster/aicentralcommand:0.1",
