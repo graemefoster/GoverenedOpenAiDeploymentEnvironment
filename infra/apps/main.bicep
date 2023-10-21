@@ -32,9 +32,16 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
       vnetRouteAllEnabled: true
       ipSecurityRestrictions: []
       scmIpSecurityRestrictions: []
-      linuxFxVersion: 'DOCKER|graemefoster/aicentralcommand:0.3'
+      linuxFxVersion: 'DOCKER|graemefoster/aicentralcommand:0.4'
       appSettings: [
-
+        {
+          name: 'AICentralCommand__AuthProviders__0__Type'
+          value: 'NoAuth'
+        }
+        {
+          name: 'AICentralCommand__AuthProviders__0__Name'
+          value: 'no-auth'
+        }
         {
           name: 'AICentralCommand__Endpoints__0__Type'
           value: 'AzureOpenAIEndpoint'
@@ -82,6 +89,10 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
         {
           name: 'AICentralCommand__Pipelines__0__EndpointChooser'
           value: 'default'
+        }
+        {
+          name: 'AICentralCommand__Pipelines__0__AuthProvider'
+          value: 'no-auth'
         }
         {
           name: 'AICentralCommand__Pipelines__0__Steps__0__StepType'
