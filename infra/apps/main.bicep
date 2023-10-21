@@ -25,18 +25,52 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
     serverFarmId: aspId
     vnetRouteAllEnabled: true
     virtualNetworkSubnetId: vnetIntegrationSubnetId
-    publicNetworkAccess: 'Enabled' //simulate locked-down network by blocking access to app site. But I need to deploy, so I open up SCM site.
     clientAffinityEnabled: false
     siteConfig: {
       minTlsVersion: '1.2'
       alwaysOn: true
       vnetRouteAllEnabled: true
-      ipSecurityRestrictionsDefaultAction: 'Deny'
-      scmIpSecurityRestrictionsDefaultAction: 'Deny'
       ipSecurityRestrictions: []
       scmIpSecurityRestrictions: []
-      linuxFxVersion: 'DOCKER|graemefoster/aicentralcommand:0.1'
+      linuxFxVersion: 'DOCKER|graemefoster/aicentralcommand:0.3'
       appSettings: [
+
+        {
+          name: 'AICentralCommand__Endpoints__0__Type'
+          value: 'AzureOpenAIEndpoint'
+        }
+        {
+          name: 'AICentralCommand__Endpoints__0__Name'
+          value: 'openai-1'
+        }
+        {
+          name: 'AICentralCommand__Endpoints__0__Properties__LanguageEndpoint'
+          value: openAiUrl
+        }
+        {
+          name: 'AICentralCommand__Endpoints__0__Properties__ModelName'
+          value: openAiModelName
+        }
+        {
+          name: 'AICentralCommand__Endpoints__0__Properties__AuthenticationType'
+          value: 'EntraPassThrough'
+        }
+        {
+          name: 'AICentralCommand__EndpointSelectors__0__Type'
+          value: 'SingleEndpoint'
+        }
+        {
+          name: 'AICentralCommand__EndpointSelectors__0__Name'
+          value: 'default'
+        }
+        {
+          name: 'AICentralCommand__EndpointSelectors__0__Properties__Endpoint'
+          value: 'openai-1'
+        }
+        {
+          name: 'AICentralCommand__Pipelines__0__Name'
+          value: 'SynchronousPipeline'
+        }
         {
           name: 'AICentralCommand__Pipelines__0__Name'
           value: 'SynchronousPipeline'
@@ -46,37 +80,24 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
           value: '/openai/deployments/Gpt35Turbo0613/chat/completions'
         }
         {
+          name: 'AICentralCommand__Pipelines__0__EndpointChooser'
+          value: 'default'
+        }
+        {
           name: 'AICentralCommand__Pipelines__0__Steps__0__StepType'
           value: 'AzureMonitorLogger'
         }
         {
-          name: 'AICentralCommand__Pipelines__0__Steps__0__StepParameters__WorkspaceId'
+          name: 'AICentralCommand__Pipelines__0__Steps__0__Properties__WorkspaceId'
           value: azureMonitorWorkspaceId
         }
         {
-          name: 'AICentralCommand__Pipelines__0__Steps__0__StepParameters__Key'
+          name: 'AICentralCommand__Pipelines__0__Steps__0__Properties__Key'
           value: listKeys(lanalytics.id, '2020-08-01').primarySharedKey
         }
         {
-          name: 'AICentralCommand__Pipelines__0__Steps__0__StepParameters__LogPrompt'
+          name: 'AICentralCommand__Pipelines__0__Steps__0__Properties__LogPrompt'
           value: 'true'
-        }
-
-        {
-          name: 'AICentralCommand__Pipelines__0__Steps__1__StepType'
-          value: 'OpenAiProxyPipelineStep'
-        }
-        {
-          name: 'AICentralCommand__Pipelines__0__Steps__1__StepParameters__LanguageEndpoint'
-          value: openAiUrl
-        }
-        {
-          name: 'AICentralCommand__Pipelines__0__Steps__1__StepParameters__ModelName'
-          value: openAiModelName
-        }
-        {
-          name: 'AICentralCommand__Pipelines__0__Steps__1__StepParameters__AuthenticationType'
-          value: 'EntraPassThrough'
         }
         {
           name: 'DOCKER_REGISTRY_SERVER_URL'
