@@ -38,45 +38,49 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
       linuxFxVersion: 'DOCKER|graemefoster/aicentralcommand:0.1'
       appSettings: [
         {
-          name: 'AICentralCommand__Pipelines__Name'
+          name: 'AICentralCommand__Pipelines__0__Name'
           value: 'SynchronousPipeline'
         }
         {
-          name: 'AICentralCommand__Pipelines__Path'
+          name: 'AICentralCommand__Pipelines__0__Path'
           value: '/openai/deployments/Gpt35Turbo0613/chat/completions'
         }
         {
-          name: 'AICentralCommand__Pipelines__Steps__0__StepType'
+          name: 'AICentralCommand__Pipelines__0__Steps__0__StepType'
           value: 'AzureMonitorLogger'
         }
         {
-          name: 'AICentralCommand__Pipelines__Steps__0__StepParameters__WorkspaceId'
+          name: 'AICentralCommand__Pipelines__0__Steps__0__StepParameters__WorkspaceId'
           value: azureMonitorWorkspaceId
         }
         {
-          name: 'AICentralCommand__Pipelines__Steps__0__StepParameters__Key'
+          name: 'AICentralCommand__Pipelines__0__Steps__0__StepParameters__Key'
           value: listKeys(lanalytics.id, '2020-08-01').primarySharedKey
         }
         {
-          name: 'AICentralCommand__Pipelines__Steps__0__StepParameters__LogPrompt'
+          name: 'AICentralCommand__Pipelines__0__Steps__0__StepParameters__LogPrompt'
           value: 'true'
         }
 
         {
-          name: 'AICentralCommand__Pipelines__Steps__1__StepType'
+          name: 'AICentralCommand__Pipelines__0__Steps__1__StepType'
           value: 'OpenAiProxyPipelineStep'
         }
         {
-          name: 'AICentralCommand__Pipelines__Steps__1__StepParameters__LanguageEndpoint'
+          name: 'AICentralCommand__Pipelines__0__Steps__1__StepParameters__LanguageEndpoint'
           value: openAiUrl
         }
         {
-          name: 'AICentralCommand__Pipelines__Steps__1__StepParameters__ModelName'
+          name: 'AICentralCommand__Pipelines__0__Steps__1__StepParameters__ModelName'
           value: openAiModelName
         }
         {
-          name: 'AICentralCommand__Pipelines__Steps__1__StepParameters__AuthenticationType'
+          name: 'AICentralCommand__Pipelines__0__Steps__1__StepParameters__AuthenticationType'
           value: 'EntraPassThrough'
+        }
+        {
+          name: 'DOCKER_REGISTRY_SERVER_URL'
+          value: 'https://index.docker.io/v1'
         }
       ]
     }
