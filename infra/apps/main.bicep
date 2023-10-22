@@ -32,7 +32,7 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
       vnetRouteAllEnabled: true
       ipSecurityRestrictions: []
       scmIpSecurityRestrictions: []
-      linuxFxVersion: 'DOCKER|graemefoster/aicentralcommand:0.4'
+      linuxFxVersion: 'DOCKER|graemefoster/aicentralcommand:0.4.2'
       appSettings: [
         {
           name: 'AICentralCommand__AuthProviders__0__Type'
@@ -87,7 +87,7 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
           value: '/openai/deployments/Gpt35Turbo0613/chat/completions'
         }
         {
-          name: 'AICentralCommand__Pipelines__0__EndpointChooser'
+          name: 'AICentralCommand__Pipelines__0__EndpointSelector'
           value: 'default'
         }
         {

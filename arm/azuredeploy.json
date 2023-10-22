@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "3407193104882152390"
+      "templateHash": "5968693072286905827"
     }
   },
   "parameters": {
@@ -830,7 +830,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.22.6.54827",
-              "templateHash": "17124270794102372800"
+              "templateHash": "14123839170542432475"
             }
           },
           "parameters": {
@@ -905,7 +905,7 @@
                   "vnetRouteAllEnabled": true,
                   "ipSecurityRestrictions": [],
                   "scmIpSecurityRestrictions": [],
-                  "linuxFxVersion": "DOCKER|graemefoster/aicentralcommand:0.4",
+                  "linuxFxVersion": "DOCKER|graemefoster/aicentralcommand:0.4.2",
                   "appSettings": [
                     {
                       "name": "AICentralCommand__AuthProviders__0__Type",
@@ -960,7 +960,7 @@
                       "value": "/openai/deployments/Gpt35Turbo0613/chat/completions"
                     },
                     {
-                      "name": "AICentralCommand__Pipelines__0__EndpointChooser",
+                      "name": "AICentralCommand__Pipelines__0__EndpointSelector",
                       "value": "default"
                     },
                     {
