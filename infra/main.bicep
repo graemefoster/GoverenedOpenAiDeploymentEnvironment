@@ -50,7 +50,7 @@ var apiServiceName = 'python-api'
 
 var vnetName = '${abbrs.networkVirtualNetworks}${resourceToken}'
 var openAiName = toLower('${abbrs.cognitiveServicesAccounts}${resourceToken}')
-var aspName = '${abbrs.webSitesAppService}-${resourceToken}'
+var aspName = '${abbrs.webSitesAppService}${resourceToken}'
 var appName = 'openai-centralcommand-${resourceToken}'
 
 module vnet 'base/vnet.bicep' = {
@@ -67,8 +67,8 @@ module core 'base/core.bicep' = {
   name: '${deployment().name}-core'
   params: {
     location: location
-    logAnalyticsName: '${abbrs.operationalInsightsWorkspaces}-${environmentName}-logs'
-    appinsightsName: '${abbrs.insightsComponents}-${environmentName}'
+    logAnalyticsName: '${abbrs.operationalInsightsWorkspaces}${resourceToken}'
+    appinsightsName: '${abbrs.insightsComponents}${resourceToken}'
     tags: tags
   }
 }

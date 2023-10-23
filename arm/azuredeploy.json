@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "5968693072286905827"
+      "templateHash": "9774030575615074715"
     }
   },
   "parameters": {
@@ -192,7 +192,7 @@
     "apiServiceName": "python-api",
     "vnetName": "[format('{0}{1}', variables('abbrs').networkVirtualNetworks, variables('resourceToken'))]",
     "openAiName": "[toLower(format('{0}{1}', variables('abbrs').cognitiveServicesAccounts, variables('resourceToken')))]",
-    "aspName": "[format('{0}-{1}', variables('abbrs').webSitesAppService, variables('resourceToken'))]",
+    "aspName": "[format('{0}{1}', variables('abbrs').webSitesAppService, variables('resourceToken'))]",
     "appName": "[format('openai-centralcommand-{0}', variables('resourceToken'))]"
   },
   "resources": [
@@ -390,10 +390,10 @@
             "value": "[parameters('location')]"
           },
           "logAnalyticsName": {
-            "value": "[format('{0}-{1}-logs', variables('abbrs').operationalInsightsWorkspaces, parameters('environmentName'))]"
+            "value": "[format('{0}{1}', variables('abbrs').operationalInsightsWorkspaces, variables('resourceToken'))]"
           },
           "appinsightsName": {
-            "value": "[format('{0}-{1}', variables('abbrs').insightsComponents, parameters('environmentName'))]"
+            "value": "[format('{0}{1}', variables('abbrs').insightsComponents, variables('resourceToken'))]"
           },
           "tags": {
             "value": "[variables('tags')]"
@@ -830,7 +830,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.22.6.54827",
-              "templateHash": "14123839170542432475"
+              "templateHash": "13133529003147106333"
             }
           },
           "parameters": {
@@ -905,7 +905,7 @@
                   "vnetRouteAllEnabled": true,
                   "ipSecurityRestrictions": [],
                   "scmIpSecurityRestrictions": [],
-                  "linuxFxVersion": "DOCKER|graemefoster/aicentralcommand:0.4.2",
+                  "linuxFxVersion": "DOCKER|graemefoster/aicentralcommand:0.5",
                   "appSettings": [
                     {
                       "name": "AICentralCommand__AuthProviders__0__Type",
