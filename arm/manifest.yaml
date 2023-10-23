@@ -13,11 +13,10 @@ parameters:
 - id: devBoxNetworkPrivateEndpointSubnetId
   name: devBoxNetworkPrivateEndpointSubnetId
   type: string
-  description: Full Id of the subnet to expose the App Service Private Endpoint in. Note the Service Principal that executes the deployment must have the NetworkContributor role on this subnet.
+  description: Full Id of the subnet to expose the Open AI Private Endpoint in. Note the Service Principal that executes the deployment must have the NetworkContributor role on this subnet.
   required: true
-- id: appServicePrivateDnsZoneId
-  name: appServicePrivateDnsZoneId
+- id: openAiPrivateDnsZoneId
+  name: openAiPrivateDnsZoneId
   type: string
-  description: Id of the Private Dns Zone to register the App Service DNS into.  Note the Service Principal that executes the deployment must have the Private DNS Zone Contributor role on this subnet.
+  description: Id of the Private Dns Zone to register the Open AI DNS into.  Note the Service Principal that executes the deployment must have the Private DNS Zone Contributor role on this resource.
   required: true
-  

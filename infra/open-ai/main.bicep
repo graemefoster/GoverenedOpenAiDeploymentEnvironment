@@ -5,11 +5,12 @@ param openAiModelGpt4Name string
 param openAiEmbeddingModelName string
 param location string = resourceGroup().location
 param openAiLocation string = resourceGroup().location
-param privateEndpointSubnetId string
-param privateDnsZoneId string
+param devBoxPrivateEndpointSubnetId string
+param devBoxOpenAiPrivateDnsZoneId string
+param logAnalyticsWorkspaceId string
 param tags object
 
-resource openAiNew 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
+resource openAi 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   name: openAiResourceName
   location: openAiLocation
   kind: 'OpenAI'
@@ -31,18 +32,18 @@ resource openAiNew 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   }
 }
 
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-11-01' = {
-  name: '${openAiResourceName}-private-endpoint'
+resource devBoxSubnetPrivateEndpoint 'Microsoft.Network/privateEndpoints@2022-11-01' = if (!empty(devBoxPrivateEndpointSubnetId)) {
+  name: '${openAiResourceName}-devbox-private-endpoint'
   location: location
   properties: {
     subnet: {
-      id: privateEndpointSubnetId
+      id: devBoxPrivateEndpointSubnetId
     }
     privateLinkServiceConnections: [
       {
         name: '${openAiResourceName}-private-link-service-connection'
         properties: {
-          privateLinkServiceId: openAiNew.id
+          privateLinkServiceId: openAi.id
           groupIds: [
             'account'
           ]
@@ -50,15 +51,14 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-11-01' = {
       }
     ]
   }
-
   resource dnsGroup 'privateDnsZoneGroups@2022-11-01' = {
-    name: '${openAiResourceName}-private-endpoint-dns'
+    name: '${openAiResourceName}-devbox-private-endpoint-dns'
     properties: {
       privateDnsZoneConfigs: [
         {
           name: '${openAiResourceName}-private-endpoint-cfg'
           properties: {
-            privateDnsZoneId: privateDnsZoneId
+            privateDnsZoneId: devBoxOpenAiPrivateDnsZoneId
           }
         }
       ]
@@ -68,7 +68,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-11-01' = {
 
 resource deploymentNew 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
   name: openAiModelName
-  parent: openAiNew
+  parent: openAi
   sku: {
     name: 'Standard'
     capacity: 20
@@ -84,7 +84,7 @@ resource deploymentNew 'Microsoft.CognitiveServices/accounts/deployments@2023-05
 
 resource gpt4DeploymentNew 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = if (!empty(openAiModelGpt4Name)) {
   name: empty(openAiModelGpt4Name) ? 'IGNORE' : openAiModelGpt4Name //fix Bicep issue which blows up if name is empty
-  parent: openAiNew
+  parent: openAi
   sku: {
     name: 'Standard'
     capacity: 20
@@ -103,7 +103,7 @@ resource gpt4DeploymentNew 'Microsoft.CognitiveServices/accounts/deployments@202
 
 resource embeddingDeploymentNew 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
   name: openAiEmbeddingModelName
-  parent: openAiNew
+  parent: openAi
   sku: {
     name: 'Standard'
     capacity: 20
@@ -118,8 +118,24 @@ resource embeddingDeploymentNew 'Microsoft.CognitiveServices/accounts/deployment
   dependsOn: empty(gpt4DeploymentNew) ? [ deploymentNew ] : [ gpt4DeploymentNew ]
 }
 
-output id string = openAiNew.id
-output openAiName string = openAiNew.name
-output openAiEndpoint string = openAiNew.properties.endpoint
+
+resource diagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  scope: openAi
+  name: 'diagnostics'
+  properties: {
+    workspaceId: logAnalyticsWorkspaceId
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+  }
+}
+
+
+output id string = openAi.id
+output openAiName string = openAi.name
+output openAiEndpoint string = openAi.properties.endpoint
 output modelName string = deploymentNew.name
 output embeddingModelName string = embeddingDeploymentNew.name

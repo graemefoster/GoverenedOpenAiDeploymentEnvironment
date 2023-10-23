@@ -20,8 +20,8 @@ param openAiLocation string = resourceGroup().location
 @description('Subnet the devbox can reach to expose the App Service private endpoint in')
 param devBoxNetworkPrivateEndpointSubnetId string
 
-@description('Private DNS Zone to use for the App Service resource')
-param appServicePrivateDnsZoneId string
+@description('Private DNS Zone to use for the Open AI resource')
+param openAiPrivateDnsZoneId string
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
@@ -48,36 +48,14 @@ var apiServiceName = 'python-api'
 // A full example that leverages azd bicep modules can be seen in the todo-python-mongo template:
 // https://github.com/Azure-Samples/todo-python-mongo/tree/main/infra
 
-var vnetName = '${abbrs.networkVirtualNetworks}${resourceToken}'
 var openAiName = toLower('${abbrs.cognitiveServicesAccounts}${resourceToken}')
-var aspName = '${abbrs.webSitesAppService}${resourceToken}'
-var appName = 'openai-centralcommand-${resourceToken}'
-
-module vnet 'base/vnet.bicep' = {
-  name: '${deployment().name}-vnet'
-  params: {
-    vnetCidr: '10.200.0.0/16'
-    vnetName: vnetName
-    location: location
-    tags: tags
-  }
-}
 
 module core 'base/core.bicep' = {
   name: '${deployment().name}-core'
   params: {
     location: location
     logAnalyticsName: '${abbrs.operationalInsightsWorkspaces}${resourceToken}'
-    appinsightsName: '${abbrs.insightsComponents}${resourceToken}'
     tags: tags
-  }
-}
-
-module asp 'base/asp.bicep' = {
-  name: '${deployment().name}-asp'
-  params: {
-    location: location
-    aspName: aspName
   }
 }
 
@@ -91,25 +69,10 @@ module openai 'open-ai/main.bicep' = {
     openAiModelGpt4Name: ''
     openAiLocation: openAiLocation
     openAiResourceName: openAiName
-    privateDnsZoneId: vnet.outputs.openAiPrivateDnsZoneId
-    privateEndpointSubnetId: vnet.outputs.privateEndpointSubnetId
+    devBoxPrivateEndpointSubnetId: devBoxNetworkPrivateEndpointSubnetId
+    devBoxOpenAiPrivateDnsZoneId: openAiPrivateDnsZoneId
+    logAnalyticsWorkspaceId: core.outputs.logAnalyticsId
     tags: tags
-  }
-}
-
-module openAiCentralCommand 'apps/main.bicep' = {
-  name: '${deployment().name}-cc'
-  params: {
-    aspId: asp.outputs.aspId
-    azureMonitorWorkspaceId: core.outputs.logAnalyticsCustomerId
-    azureMonitorWorkspaceName: core.outputs.logAnalyticsName
-    openAiModelName: openai.outputs.modelName
-    openAiUrl: openai.outputs.openAiEndpoint
-    privateDnsZoneId: appServicePrivateDnsZoneId
-    privateEndpointSubnetId: devBoxNetworkPrivateEndpointSubnetId
-    sampleAppName: appName
-    vnetIntegrationSubnetId: vnet.outputs.vnetIntegrationSubnetId
-    location: location
   }
 }
 
