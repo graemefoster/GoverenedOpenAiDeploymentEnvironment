@@ -1,7 +1,7 @@
 name: AzureOpenAISandbox
 version: 1.0.0
 summary: Azure Open AI with Policy deployment
-description: Deploys Open AI behind API Management with AAD RBAC
+description: Deploys Open AI behind a Open AI Proxy for additional logging, resiliency, and security.
 runner: ARM
 templatePath: azuredeploy.json
 parameters:
@@ -13,7 +13,7 @@ parameters:
 - id: devBoxNetworkPrivateEndpointSubnetId
   name: devBoxNetworkPrivateEndpointSubnetId
   type: string
-  description: Full Id of the subnet to expose the Api Management Private Endpoint in. Note the Service Principal that executes the deployment must have the NetworkContributor role on this subnet.
+  description: Full Id of the subnet to expose the App Service Private Endpoint in. Note the Service Principal that executes the deployment must have the NetworkContributor role on this subnet.
   required: true
 - id: appServicePrivateDnsZoneId
   name: appServicePrivateDnsZoneId

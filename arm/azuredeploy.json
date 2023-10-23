@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "3731926598404992390"
+      "templateHash": "3265348424684564693"
     }
   },
   "parameters": {
@@ -37,13 +37,13 @@
     "devBoxNetworkPrivateEndpointSubnetId": {
       "type": "string",
       "metadata": {
-        "description": "Subnet the devbox can reach to expose the APIm private endpoint in"
+        "description": "Subnet the devbox can reach to expose the App Service private endpoint in"
       }
     },
     "appServicePrivateDnsZoneId": {
       "type": "string",
       "metadata": {
-        "description": "Private DNS Zone to use for the APIm resource"
+        "description": "Private DNS Zone to use for the App Service resource"
       }
     }
   },
@@ -487,7 +487,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-apim', deployment().name)]",
+      "name": "[format('{0}-asp', deployment().name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -793,7 +793,7 @@
         "mode": "Incremental",
         "parameters": {
           "aspId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-apim', deployment().name)), '2022-09-01').outputs.aspId.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-asp', deployment().name)), '2022-09-01').outputs.aspId.value]"
           },
           "azureMonitorWorkspaceId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-core', deployment().name)), '2022-09-01').outputs.logAnalyticsCustomerId.value]"
@@ -1010,7 +1010,7 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-apim', deployment().name))]",
+        "[resourceId('Microsoft.Resources/deployments', format('{0}-asp', deployment().name))]",
         "[resourceId('Microsoft.Resources/deployments', format('{0}-core', deployment().name))]",
         "[resourceId('Microsoft.Resources/deployments', format('{0}-openai', deployment().name))]",
         "[resourceId('Microsoft.Resources/deployments', format('{0}-vnet', deployment().name))]"

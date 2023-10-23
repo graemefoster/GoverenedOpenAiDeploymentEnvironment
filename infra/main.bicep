@@ -17,10 +17,10 @@ param location string = resourceGroup().location
 @description('Location for OpenAI resource')
 param openAiLocation string = resourceGroup().location
 
-@description('Subnet the devbox can reach to expose the APIm private endpoint in')
+@description('Subnet the devbox can reach to expose the App Service private endpoint in')
 param devBoxNetworkPrivateEndpointSubnetId string
 
-@description('Private DNS Zone to use for the APIm resource')
+@description('Private DNS Zone to use for the App Service resource')
 param appServicePrivateDnsZoneId string
 
 var abbrs = loadJsonContent('./abbreviations.json')
@@ -74,7 +74,7 @@ module core 'base/core.bicep' = {
 }
 
 module asp 'base/asp.bicep' = {
-  name: '${deployment().name}-apim'
+  name: '${deployment().name}-asp'
   params: {
     location: location
     aspName: aspName
