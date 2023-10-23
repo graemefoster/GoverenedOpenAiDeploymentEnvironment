@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "9774030575615074715"
+      "templateHash": "3731926598404992390"
     }
   },
   "parameters": {
@@ -830,7 +830,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.22.6.54827",
-              "templateHash": "13133529003147106333"
+              "templateHash": "11011726193522230698"
             }
           },
           "parameters": {
@@ -908,14 +908,6 @@
                   "linuxFxVersion": "DOCKER|graemefoster/aicentralcommand:0.5",
                   "appSettings": [
                     {
-                      "name": "AICentralCommand__AuthProviders__0__Type",
-                      "value": "NoAuth"
-                    },
-                    {
-                      "name": "AICentralCommand__AuthProviders__0__Name",
-                      "value": "no-auth"
-                    },
-                    {
                       "name": "AICentralCommand__Endpoints__0__Type",
                       "value": "AzureOpenAIEndpoint"
                     },
@@ -952,20 +944,12 @@
                       "value": "SynchronousPipeline"
                     },
                     {
-                      "name": "AICentralCommand__Pipelines__0__Name",
-                      "value": "SynchronousPipeline"
-                    },
-                    {
                       "name": "AICentralCommand__Pipelines__0__Path",
                       "value": "/openai/deployments/Gpt35Turbo0613/chat/completions"
                     },
                     {
                       "name": "AICentralCommand__Pipelines__0__EndpointSelector",
                       "value": "default"
-                    },
-                    {
-                      "name": "AICentralCommand__Pipelines__0__AuthProvider",
-                      "value": "no-auth"
                     },
                     {
                       "name": "AICentralCommand__Pipelines__0__Steps__0__StepType",

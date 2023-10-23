@@ -35,14 +35,6 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
       linuxFxVersion: 'DOCKER|graemefoster/aicentralcommand:0.5'
       appSettings: [
         {
-          name: 'AICentralCommand__AuthProviders__0__Type'
-          value: 'NoAuth'
-        }
-        {
-          name: 'AICentralCommand__AuthProviders__0__Name'
-          value: 'no-auth'
-        }
-        {
           name: 'AICentralCommand__Endpoints__0__Type'
           value: 'AzureOpenAIEndpoint'
         }
@@ -79,20 +71,12 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
           value: 'SynchronousPipeline'
         }
         {
-          name: 'AICentralCommand__Pipelines__0__Name'
-          value: 'SynchronousPipeline'
-        }
-        {
           name: 'AICentralCommand__Pipelines__0__Path'
           value: '/openai/deployments/Gpt35Turbo0613/chat/completions'
         }
         {
           name: 'AICentralCommand__Pipelines__0__EndpointSelector'
           value: 'default'
-        }
-        {
-          name: 'AICentralCommand__Pipelines__0__AuthProvider'
-          value: 'no-auth'
         }
         {
           name: 'AICentralCommand__Pipelines__0__Steps__0__StepType'
