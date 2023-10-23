@@ -32,7 +32,7 @@ resource app 'Microsoft.Web/sites@2022-09-01' = {
       vnetRouteAllEnabled: true
       ipSecurityRestrictions: []
       scmIpSecurityRestrictions: []
-      linuxFxVersion: 'DOCKER|graemefoster/aicentralcommand:0.4.2'
+      linuxFxVersion: 'DOCKER|graemefoster/aicentralcommand:0.5'
       appSettings: [
         {
           name: 'AICentralCommand__AuthProviders__0__Type'
